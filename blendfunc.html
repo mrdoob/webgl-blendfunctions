@@ -1,0 +1,387 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>gl.blendFunc()</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				font-family: Monospace;
+				background-color: #ffffff;
+				margin: 20px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px;
+
+				color: #ffffff;
+
+				font-size: 14px;
+				font-weight: bold;
+				text-shadow: rgba( 0, 0, 0, 0.75 ) 0px 1px 2px;
+			}
+
+			#effect {
+				width: 400px;
+				height: 400px;
+				margin-right: 20px;
+				background: url("files/bg.png");
+				float: left;
+			}
+
+			.thumb {
+				width: 100px;
+				height: 100px;
+				margin-right: 10px;
+				background: url("files/bg.png");
+				float: left;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<div style="position:absolute;top:0px;right:0px;">
+			<a href="https://github.com/mrdoob/webgl-blending-tools"><img src="fork_me_at_github.png"></a>
+		</div>
+
+		<h1>gl.blendFunc()</h1>
+
+		<table><tr valign="top"><td>
+
+			<div id="effect"></div>
+
+		</td><td>
+
+			Equation:<br /> 
+			<select id="equation" onkeyup="update();" onchange="update();"> 
+				<option selected>FUNC_ADD</option>
+				<option>FUNC_SUBTRACT</option>
+				<option>FUNC_REVERSE_SUBTRACT</option>
+			</select>
+			<br />
+
+			Source:<br />
+			<select id="source" onkeyup="update();" onchange="update();"> 
+				<option>ZERO</option> 
+				<option>ONE</option> 
+				<option>SRC_COLOR</option> 
+				<option>ONE_MINUS_SRC_COLOR</option> 
+				<option>DST_COLOR</option> 
+				<option>ONE_MINUS_DST_COLOR</option> 
+				<option selected>SRC_ALPHA</option> 
+				<option>ONE_MINUS_SRC_ALPHA</option> 
+				<option>DST_ALPHA</option> 
+				<option>ONE_MINUS_DST_ALPHA</option> 
+				<option>SRC_ALPHA_SATURATE</option> 
+				<option>CONSTANT_COLOR</option> 
+				<option>ONE_MINUS_CONSTANT_COLOR</option> 
+				<option>CONSTANT_ALPHA</option> 
+				<option>ONE_MINUS_CONSTANT_ALPHA</option> 
+			</select>
+			<br />
+
+			Destination:<br /> 
+			<select id="destination" onkeyup="update();" onchange="update();"> 
+				<option>ZERO</option> 
+				<option>ONE</option> 
+				<option>SRC_COLOR</option> 
+				<option>ONE_MINUS_SRC_COLOR</option> 
+				<option>DST_COLOR</option> 
+				<option>ONE_MINUS_DST_COLOR</option> 
+				<option>SRC_ALPHA</option> 
+				<option selected>ONE_MINUS_SRC_ALPHA</option> 
+				<option>DST_ALPHA</option> 
+				<option>ONE_MINUS_DST_ALPHA</option> 
+				<option>SRC_ALPHA_SATURATE</option> 
+				<option>CONSTANT_COLOR</option> 
+				<option>ONE_MINUS_CONSTANT_COLOR</option> 
+				<option>CONSTANT_ALPHA</option> 
+				<option>ONE_MINUS_CONSTANT_ALPHA</option> 
+			</select>
+			<br /><br />
+
+			<div class="thumb"><img id="texture1" width="100" /></div>
+			<div class="thumb"><img id="texture2" width="100" /></div>
+
+		</td></tr></table>
+
+		<br />
+		<textarea id="code" style="width:700px;height:80px;"></textarea>
+
+		<script id="vs" type="x-shader/x-vertex">
+
+			attribute vec3 position;
+
+			void main() {
+
+				gl_Position = vec4( position, 1.0 );
+
+			}
+
+		</script>
+
+		<script id="fs" type="x-shader/x-fragment">
+
+			uniform vec2 resolution;
+			uniform sampler2D texture;
+
+			void main( void ) {
+
+				gl_FragColor = texture2D( texture, gl_FragCoord.xy / resolution.xy ).rgba;
+
+			}
+
+		</script>
+
+		<script type="text/javascript">
+
+			var effectDiv, sourceDiv, canvas, gl, buffer,
+			vertex_shader, fragment_shader, currentProgram,
+			vertexPositionLocation, texture1, texture2, textureLocation,
+			parameters = { screenWidth: 0, screenHeight: 0 },
+			equations, functions;
+
+			init();
+
+			function init() {
+
+				vertex_shader = document.getElementById( 'vs' ).textContent;
+				fragment_shader = document.getElementById( 'fs' ).textContent;
+
+				effectDiv = document.getElementById( 'effect' );
+
+				canvas = document.createElement( 'canvas' );
+				effectDiv.appendChild( canvas );
+
+				// Initialise WebGL
+
+				try {
+
+					gl = canvas.getContext( 'experimental-webgl' );
+
+					gl.enable( gl.DEPTH_TEST );
+					gl.depthFunc( gl.LEQUAL );
+
+					gl.enable( gl.BLEND );
+
+					gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
+
+				} catch( error ) { }
+
+				if ( !gl ) {
+
+					alert("WebGL not supported");
+					throw "cannot create webgl context";
+
+				}
+
+				equations = [
+					"gl.FUNC_ADD",
+					"gl.FUNC_SUBTRACT",
+					"gl.FUNC_REVERSE_SUBTRACT"
+				];
+
+				functions = [
+					"gl.ZERO",
+					"gl.ONE",
+					"gl.SRC_COLOR",
+					"gl.ONE_MINUS_SRC_COLOR",
+					"gl.DST_COLOR",
+					"gl.ONE_MINUS_DST_COLOR",
+					"gl.SRC_ALPHA",
+					"gl.ONE_MINUS_SRC_ALPHA",
+					"gl.DST_ALPHA",
+					"gl.ONE_MINUS_DST_ALPHA",
+					"gl.SRC_ALPHA_SATURATE",
+					"gl.CONSTANT_COLOR",
+					"gl.ONE_MINUS_CONSTANT_COLOR",
+					"gl.CONSTANT_ALPHA",
+					"gl.ONE_MINUS_CONSTANT_ALPHA"
+				];
+
+				// Create Vertex buffer (2 triangles)
+
+				buffer = gl.createBuffer();
+				gl.bindBuffer( gl.ARRAY_BUFFER, buffer );
+				gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( [
+					- 1.0, - 1.0, 1.0,
+					- 1.0, - 1.0, 1.0,
+					  1.0, - 1.0, 1.0,
+					  1.0, - 1.0, 1.0
+				] ), gl.STATIC_DRAW );
+
+				// Create Program
+
+				currentProgram = createProgram( vertex_shader, fragment_shader );
+
+				document.getElementById( 'texture1' ).src = 'files/colors.png';
+				texture1 = loadTexture( 'files/colors.png' );
+
+				document.getElementById( 'texture2' ).src = 'files/flamingos.png';
+				texture2 = loadTexture( 'files/flamingos.png' );
+
+				onWindowResize();
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize( event ) {
+
+				canvas.width = 400;
+				canvas.height = 400;
+
+				parameters.screenWidth = canvas.width;
+				parameters.screenHeight = canvas.height;
+
+				gl.viewport( 0, 0, canvas.width, canvas.height );
+
+			}
+
+			function loadTexture( path ) {
+
+				var texture = gl.createTexture();
+
+				var image = new Image();
+
+				image.onload = function() {
+
+					gl.enable( gl.TEXTURE_2D );
+					gl.bindTexture( gl.TEXTURE_2D, texture );
+					gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image );
+					gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR );
+					gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR );
+					gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE );
+					gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE );
+					gl.generateMipmap( gl.TEXTURE_2D );
+					gl.bindTexture( gl.TEXTURE_2D, null );
+
+					update();
+
+				};
+
+				image.src = path;
+
+				return texture;
+
+			}
+
+			function createProgram( vertex, fragment ) {
+
+				var program = gl.createProgram();
+
+				var vs = createShader( vertex, gl.VERTEX_SHADER );
+				var fs = createShader( '#ifdef GL_ES\nprecision highp float;\n#endif\n\n' + fragment, gl.FRAGMENT_SHADER );
+
+				if ( vs == null || fs == null ) return null;
+
+				gl.attachShader( program, vs );
+				gl.attachShader( program, fs );
+
+				gl.deleteShader( vs );
+				gl.deleteShader( fs );
+
+				gl.linkProgram( program );
+
+				if ( !gl.getProgramParameter( program, gl.LINK_STATUS ) ) {
+
+					alert( "ERROR:\n" +
+					"VALIDATE_STATUS: " + gl.getProgramParameter( program, gl.VALIDATE_STATUS ) + "\n" +
+					"ERROR: " + gl.getError() + "\n\n" +
+					"- Vertex Shader -\n" + vertex + "\n\n" +
+					"- Fragment Shader -\n" + fragment );
+
+					return null;
+
+				}
+
+				return program;
+
+			}
+
+			function createShader( src, type ) {
+
+				var shader = gl.createShader( type );
+
+				gl.shaderSource( shader, src );
+				gl.compileShader( shader );
+
+				if ( !gl.getShaderParameter( shader, gl.COMPILE_STATUS ) ) {
+
+					alert( ( type == gl.VERTEX_SHADER ? "VERTEX" : "FRAGMENT" ) + " SHADER:\n" + gl.getShaderInfoLog( shader ) );
+					return null;
+
+				}
+
+				return shader;
+
+			}
+
+			function update() {
+
+				var textarea = document.getElementById( 'code' );
+				textarea.innerHTML = "gl.enable( gl.BLEND );\ngl.blendFunc( " + equations[ document.getElementById( 'equation' ).selectedIndex ] + " );\ngl.blendFunc( " + functions[ document.getElementById( 'source' ).selectedIndex ] + ", " + functions[ document.getElementById( 'destination' ).selectedIndex ] + " );";
+
+				render();
+
+			}
+
+			function render() {
+
+				if ( !currentProgram ) return;
+
+				gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+
+				// Load program into GPU
+
+				gl.useProgram( currentProgram );
+
+				// Get var locations
+
+				vertexPositionLocation = gl.getAttribLocation( currentProgram, 'position' );
+				textureLocation = gl.getUniformLocation( currentProgram, 'texture' );
+
+				// Set values to program variables
+
+				gl.uniform2f( gl.getUniformLocation( currentProgram, 'resolution' ), parameters.screenWidth, parameters.screenHeight );
+
+				gl.uniform1i( textureLocation, 0 );
+				gl.activeTexture( gl.TEXTURE0 );
+				gl.bindTexture( gl.TEXTURE_2D, texture1 );
+
+				// Render geometry
+
+				gl.bindBuffer( gl.ARRAY_BUFFER, buffer );
+				gl.vertexAttribPointer( vertexPositionLocation, 2, gl.FLOAT, false, 0, 0 );
+				gl.enableVertexAttribArray( vertexPositionLocation );
+				gl.drawArrays( gl.TRIANGLES, 0, 6 );
+				gl.disableVertexAttribArray( vertexPositionLocation );
+
+				//
+
+				gl.blendEquation(
+					eval( equations[ document.getElementById( 'equation' ).selectedIndex ] )
+				);
+
+				gl.blendFunc(
+					eval( functions[ document.getElementById( 'source' ).selectedIndex ] ),
+					eval( functions[ document.getElementById( 'destination' ).selectedIndex ] )
+				);
+
+				gl.bindTexture( gl.TEXTURE_2D, texture2 );
+
+				// Render geometry
+
+				gl.bindBuffer( gl.ARRAY_BUFFER, buffer );
+				gl.vertexAttribPointer( vertexPositionLocation, 2, gl.FLOAT, false, 0, 0 );
+				gl.enableVertexAttribArray( vertexPositionLocation );
+				gl.drawArrays( gl.TRIANGLES, 0, 6 );
+				gl.disableVertexAttribArray( vertexPositionLocation );
+
+			}
+
+		</script>
+
+	</body>
+</html>
