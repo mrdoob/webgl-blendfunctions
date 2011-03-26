@@ -31,11 +31,10 @@
 			}
 
 			.thumb {
-				width: 100px;
-				height: 100px;
-				margin-right: 10px;
+				width: 75px;
+				height: 75px;
+				margin-bottom: 10px;
 				background: url("files/bg.png");
-				float: left;
 			}
 
 		</style>
@@ -54,15 +53,18 @@
 
 		</td><td>
 
-			Equation:<br /> 
+			<strong>Equation<strong><br /> 
 			<select id="equation" onkeyup="update();" onchange="update();"> 
 				<option selected>FUNC_ADD</option>
 				<option>FUNC_SUBTRACT</option>
 				<option>FUNC_REVERSE_SUBTRACT</option>
 			</select>
-			<br />
+			<br /><br />
 
-			Source:<br />
+			<strong>Source</strong><br />
+
+			<div class="thumb"><img id="texture2" width="75" /></div>
+
 			<select id="source" onkeyup="update();" onchange="update();"> 
 				<option>ZERO</option> 
 				<option>ONE</option> 
@@ -80,9 +82,12 @@
 				<option>CONSTANT_ALPHA</option> 
 				<option>ONE_MINUS_CONSTANT_ALPHA</option> 
 			</select>
-			<br />
+			<br /><br />
 
-			Destination:<br /> 
+			<strong>Destination<strong><br /> 
+
+			<div class="thumb"><img id="texture1" width="75" /></div>
+
 			<select id="destination" onkeyup="update();" onchange="update();"> 
 				<option>ZERO</option> 
 				<option>ONE</option> 
@@ -102,8 +107,6 @@
 			</select>
 			<br /><br />
 
-			<div class="thumb"><img id="texture1" width="100" /></div>
-			<div class="thumb"><img id="texture2" width="100" /></div>
 
 		</td></tr></table>
 

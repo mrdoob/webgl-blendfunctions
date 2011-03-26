@@ -19,11 +19,10 @@
 			}
 
 			.thumb {
-				width: 100px;
-				height: 100px;
+				width: 75px;
+				height: 75px;
 				margin-right: 10px;
 				background: url("files/bg.png");
-				float:left;
 			}
 
 		</style>
@@ -42,16 +41,26 @@
 
 		</td><td>
 
-			Color Equation:<br /> 
-			<select id="equationColor" onkeyup="update();" onchange="update();"> 
+			<strong>Equations</strong><br /> 
+			Color <select id="equationColor" onkeyup="update();" onchange="update();"> 
+				<option selected>FUNC_ADD</option>
+				<option>FUNC_SUBTRACT</option>
+				<option>FUNC_REVERSE_SUBTRACT</option>
+			</select>
+			<br /> 
+			Alpha <select id="equationAlpha" onkeyup="update();" onchange="update();"> 
 				<option selected>FUNC_ADD</option>
 				<option>FUNC_SUBTRACT</option>
 				<option>FUNC_REVERSE_SUBTRACT</option>
 			</select>
 			<br />
+			<br />
 
-			Source Color:<br />
-			<select id="sourceColor" onkeyup="update();" onchange="update();"> 
+			<strong>Source</strong><br />
+
+			<div class="thumb"><img id="texture2" width="75" /></div>
+
+			Color <select id="sourceColor" onkeyup="update();" onchange="update();"> 
 				<option>ZERO</option>
 				<option>ONE</option>
 				<option>SRC_COLOR</option>
@@ -70,36 +79,7 @@
 			</select>
 			<br />
 
-			Destination Color:<br />
-			<select id="destinationColor" onkeyup="update();" onchange="update();"> 
-				<option>ZERO</option>
-				<option>ONE</option>
-				<option>SRC_COLOR</option>
-				<option>ONE_MINUS_SRC_COLOR</option>
-				<option>DST_COLOR</option>
-				<option>ONE_MINUS_DST_COLOR</option>
-				<option>SRC_ALPHA</option>
-				<option selected>ONE_MINUS_SRC_ALPHA</option>
-				<option>DST_ALPHA</option>
-				<option>ONE_MINUS_DST_ALPHA</option>
-				<option>SRC_ALPHA_SATURATE</option>
-				<option>CONSTANT_COLOR</option>
-				<option>ONE_MINUS_CONSTANT_COLOR</option>
-				<option>CONSTANT_ALPHA</option>
-				<option>ONE_MINUS_CONSTANT_ALPHA</option>
-			</select>
-			<br /><br />
-
-			Alpha Equation:<br /> 
-			<select id="equationAlpha" onkeyup="update();" onchange="update();"> 
-				<option selected>FUNC_ADD</option>
-				<option>FUNC_SUBTRACT</option>
-				<option>FUNC_REVERSE_SUBTRACT</option>
-			</select>
-			<br />
-
-			Source Alpha:<br /> 
-			<select id="sourceAlpha" onkeyup="update();" onchange="update();"> 
+			Alpha <select id="sourceAlpha" onkeyup="update();" onchange="update();"> 
 				<option>ZERO</option>
 				<option selected>ONE</option>
 				<option>SRC_COLOR</option>
@@ -116,10 +96,32 @@
 				<option>CONSTANT_ALPHA</option>
 				<option>ONE_MINUS_CONSTANT_ALPHA</option>
 			</select>
+			<br /><br />
+
+			<strong>Destination</strong><br />
+
+			<div class="thumb"><img id="texture1" width="75" /></div>
+
+			Color <select id="destinationColor" onkeyup="update();" onchange="update();"> 
+				<option>ZERO</option>
+				<option>ONE</option>
+				<option>SRC_COLOR</option>
+				<option>ONE_MINUS_SRC_COLOR</option>
+				<option>DST_COLOR</option>
+				<option>ONE_MINUS_DST_COLOR</option>
+				<option>SRC_ALPHA</option>
+				<option selected>ONE_MINUS_SRC_ALPHA</option>
+				<option>DST_ALPHA</option>
+				<option>ONE_MINUS_DST_ALPHA</option>
+				<option>SRC_ALPHA_SATURATE</option>
+				<option>CONSTANT_COLOR</option>
+				<option>ONE_MINUS_CONSTANT_COLOR</option>
+				<option>CONSTANT_ALPHA</option>
+				<option>ONE_MINUS_CONSTANT_ALPHA</option>
+			</select>
 			<br />
 
-			Destination Alpha:<br /> 
-			<select id="destinationAlpha" onkeyup="update();" onchange="update();"> 
+			Alpha <select id="destinationAlpha" onkeyup="update();" onchange="update();"> 
 				<option>ZERO</option>
 				<option selected>ONE</option>
 				<option>SRC_COLOR</option>
@@ -138,8 +140,8 @@
 			</select>
 			<br /><br /><br />
 
-			<div class="thumb"><img id="texture1" width="100" /></div>
-			<div class="thumb"><img id="texture2" width="100" /></div>
+			
+			
 
 		</td></tr></table>
 
