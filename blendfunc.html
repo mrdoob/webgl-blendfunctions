@@ -219,11 +219,11 @@
 
 				currentProgram = createProgram( vertex_shader, fragment_shader );
 
-				document.getElementById( 'texture1' ).src = 'files/colors.png';
-				texture1 = loadTexture( 'files/colors.png' );
+				document.getElementById( 'texture1' ).src = 'files/dst.png';
+				texture1 = loadTexture( 'files/dst.png' );
 
-				document.getElementById( 'texture2' ).src = 'files/flamingos.png';
-				texture2 = loadTexture( 'files/flamingos.png' );
+				document.getElementById( 'texture2' ).src = 'files/src.png';
+				texture2 = loadTexture( 'files/src.png' );
 
 				onWindowResize();
 				window.addEventListener( 'resize', onWindowResize, false );
