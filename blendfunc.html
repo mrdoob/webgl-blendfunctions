@@ -162,7 +162,7 @@
 
 				try {
 
-					gl = canvas.getContext( 'experimental-webgl' );
+					gl = canvas.getContext( 'experimental-webgl', {premultipliedAlpha: false} );
 
 					gl.enable( gl.DEPTH_TEST );
 					gl.depthFunc( gl.LEQUAL );
@@ -324,7 +324,7 @@
 			function update() {
 
 				var textarea = document.getElementById( 'code' );
-				textarea.innerHTML = "gl.enable( gl.BLEND );\ngl.blendFunc( " + equations[ document.getElementById( 'equation' ).selectedIndex ] + " );\ngl.blendFunc( " + functions[ document.getElementById( 'source' ).selectedIndex ] + ", " + functions[ document.getElementById( 'destination' ).selectedIndex ] + " );";
+				textarea.innerHTML = "gl.enable( gl.BLEND );\ngl.blendEquation( " + equations[ document.getElementById( 'equation' ).selectedIndex ] + " );\ngl.blendFunc( " + functions[ document.getElementById( 'source' ).selectedIndex ] + ", " + functions[ document.getElementById( 'destination' ).selectedIndex ] + " );";
 
 				render();
 
@@ -353,6 +353,10 @@
 				gl.activeTexture( gl.TEXTURE0 );
 				gl.bindTexture( gl.TEXTURE_2D, texture1 );
 
+				// disable blending for simple output of the texture
+				
+				gl.disable(gl.BLEND);
+				
 				// Render geometry
 
 				gl.bindBuffer( gl.ARRAY_BUFFER, buffer );
@@ -361,8 +365,10 @@
 				gl.drawArrays( gl.TRIANGLES, 0, 6 );
 				gl.disableVertexAttribArray( vertexPositionLocation );
 
-				//
+				// set custom blend mode
 
+				gl.enable(gl.BLEND);
+				
 				gl.blendEquation(
 					eval( equations[ document.getElementById( 'equation' ).selectedIndex ] )
 				);
